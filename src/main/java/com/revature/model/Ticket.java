@@ -8,13 +8,8 @@ public class Ticket {
     public enum StatusValues {PENDING, APPROVED, DENIED}
 
     private StatusValues status = StatusValues.PENDING; //The status of this ticket. All tickets start out PENDING.
-    private String amount = "0.0"; //The amount of money, in dollars, that this ticket is asking to reimburse
-    private String description = "(no description)"; //A description of the purchase that is intended to be reimbursed.
-
-    //Ensures that the Jackson library is able to create instances of this class correctly
-    public Ticket() {
-        super();
-    }
+    private final String amount; //The amount of money, in dollars, that this ticket is asking to reimburse
+    private final String description; //A description of the purchase that is intended to be reimbursed.
 
     public Ticket(String amount, String description){
         this.amount = amount;
