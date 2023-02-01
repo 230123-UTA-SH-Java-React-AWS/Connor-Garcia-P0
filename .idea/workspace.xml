@@ -4,15 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ddab136a-6718-427f-ae98-4de5d0106f97" name="Changes" comment="Creating the skeleton of the project capabilities, meaning endpoints and representations of the data.">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/revature/utils/ConnectionUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/model/Employee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/model/Employee.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/model/Ticket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/model/Ticket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/repository/EmployeeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/repository/EmployeeRepository.java" afterDir="false" />
-    </list>
+    <list default="true" id="ddab136a-6718-427f-ae98-4de5d0106f97" name="Changes" comment="Created more scaffolding to support the rest of the project; project can now connect to a database." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -126,7 +118,21 @@
       <option name="project" value="LOCAL" />
       <updated>1675144418558</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Removed Jackson dependency">
+      <created>1675205559326</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1675205559327</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Created more scaffolding to support the rest of the project; project can now connect to a database.">
+      <created>1675205637719</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1675205637719</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -144,6 +150,8 @@
     <MESSAGE value="Switching IDE to IntelliJ IDEA" />
     <MESSAGE value="Removing traces of vscode from this project" />
     <MESSAGE value="Creating the skeleton of the project capabilities, meaning endpoints and representations of the data." />
-    <option name="LAST_COMMIT_MESSAGE" value="Creating the skeleton of the project capabilities, meaning endpoints and representations of the data." />
+    <MESSAGE value="Removed Jackson dependency" />
+    <MESSAGE value="Created more scaffolding to support the rest of the project; project can now connect to a database." />
+    <option name="LAST_COMMIT_MESSAGE" value="Created more scaffolding to support the rest of the project; project can now connect to a database." />
   </component>
 </project>
