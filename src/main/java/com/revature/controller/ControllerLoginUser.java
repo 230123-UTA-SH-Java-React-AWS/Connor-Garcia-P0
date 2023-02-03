@@ -1,13 +1,21 @@
 package com.revature.controller;
 
+import com.revature.service.EmployeeService;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
 
-public class ControllerLoginUser implements HttpHandler {
+public class ControllerLoginUser extends Controller {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        throw new IOException();
+        String httpVerb = exchange.getRequestMethod();
+        if(httpVerb.equals("POST")){
+            String body = getRequestBodyString(exchange);
+            sendResponse(exchange,
+                    200,
+                    EmployeeService.validateEmployee(body));
+        } else {
+            sendResponse(exchange, 403, "That action is prohibited.");
+        }
     }
 }

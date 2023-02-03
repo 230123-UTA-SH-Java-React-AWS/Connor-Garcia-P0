@@ -1,21 +1,17 @@
 package com.revature.controller;
 
-import com.revature.model.Employee;
 import com.revature.service.EmployeeService;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
+import java.util.Objects;
 
-public class ControllerDemoteUser extends Controller {
+public class ControllerGetEmployees extends Controller {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String httpVerb = exchange.getRequestMethod();
-        if(httpVerb.equals("PUT")){
-            String body = getRequestBodyString(exchange);
-            sendResponse(exchange,
-                    200,
-                    EmployeeService.alterEmployeeRole(body, Employee.Roles.STANDARD));
+        if(Objects.equals(httpVerb, "GET")) {
+            sendResponse(exchange, 200, EmployeeService.getAllEmployees());
         } else {
             sendResponse(exchange, 403, "That action is prohibited.");
         }
