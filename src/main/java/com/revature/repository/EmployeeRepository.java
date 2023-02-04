@@ -15,13 +15,9 @@ import java.util.Objects;
 public class EmployeeRepository {
 
     //Attempt to add an employee to the database; this will return a String indicating
-    // What happened when this function was called
+    // what happened when this function was called
     public String createNewEmployee(String email, String password) {
-        try {
-            if (getEmployeeByEmail(email) != null) return "That email address is already in use.";
-        } catch (IOException e) {
-            return "Unknown problem occurred.";
-        }
+        if (getEmployeeByEmail(email) != null) return "That email address is already in use.";
 
         String sql = "INSERT INTO Employees (emplEmail, emplPassword, emplRole) values (?, ?, ?)";
         try (Connection con = ConnectionUtil.getConnection()) {
@@ -44,9 +40,8 @@ public class EmployeeRepository {
      * This attempts to get the Employee object associated with a particular email address.
      * @param email The email of the employee to find
      * @return An Employee representing the one in the database if it exists; null otherwise
-     * @throws IOException if the database connection fails.
      */
-    public Employee getEmployeeByEmail(String email) throws IOException {
+    public Employee getEmployeeByEmail(String email) {
         List<Employee> employeeList = new ArrayList<>();
         Employee employee = null;
 
@@ -66,19 +61,45 @@ public class EmployeeRepository {
                 Employee.Roles eRole = switch (rs.getString(4)) {
                     case "MANAGER" -> Employee.Roles.MANAGER;
                     case "STANDARD" -> Employee.Roles.STANDARD;
-                    default -> null;
+                    default -> throw new IllegalStateException("BAD DATA IN EMPLOYEE TABLE");
                 };
-                if(eRole == null) eRole = Employee.Roles.STANDARD;
-                Employee empl = new Employee(rs.getString(2), rs.getString(3), eRole);
+                Employee empl = new Employee(rs.getString(2), rs.getString(3), eRole, rs.getInt(1));
                 employeeList.add(empl);
+            }
+        } catch (SQLException | IllegalStateException e) {
+            e.printStackTrace();
+            return null;
+        }
+        if(employeeList.size() > 0) employee = employeeList.get(0);
+        return employee;
+    }
+
+    //Gets the ID of an employee associated with the given email address
+    public int getEmployeeId(String email){
+        if(email == null) return -1;
+        List<Integer> employeeIdList = new ArrayList<>();
+        int employeeId = -1;
+
+        //Querying the database
+        String sql = "SELECT emplid FROM Employees WHERE emplemail = ?";
+        //Create the connection
+        try (Connection con = ConnectionUtil.getConnection()) {
+            //Create the querying object
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setString(1, email);
+            //Execute the query
+            ResultSet rs = stmt.executeQuery();
+            //Mapping information from a table to our data structure
+            while (rs.next()) {
+                employeeIdList.add(rs.getInt(1));
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new IOException(e);
+            return -1;
         }
 
-        if(employeeList.size() > 0) employee = employeeList.get(0);
-        return employee;
+        if(employeeIdList.size() > 0) employeeId = employeeIdList.get(0);
+        return employeeId;
     }
 
     /**
@@ -98,58 +119,16 @@ public class EmployeeRepository {
             ResultSet rs = stmt.executeQuery(sql);
             //Mapping information from a table to our data structure
             while (rs.next()) {
-                //This switch statement (which should be an if statement) is here because it adds to scalability.
-                //If more roles are added later (ADMIN, etc.), then this is easier to update.
-                Employee.Roles eRole = switch (rs.getString(4)) {
-                    case "MANAGER" -> Employee.Roles.MANAGER;
-                    case "STANDARD" -> Employee.Roles.STANDARD;
-                    default -> null;
-                };
-                if(eRole == null) eRole = Employee.Roles.STANDARD;
+                Employee.Roles eRole = Employee.Roles.STANDARD;
+                if(Objects.equals(rs.getString(4), "MANAGER")) eRole  = Employee.Roles.MANAGER;
 
-                Employee empl = new Employee(rs.getString(2), rs.getString(3), eRole);
+                Employee empl = new Employee(rs.getString(2), rs.getString(3), eRole, rs.getInt(1));
                 employeeList.add(empl);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
         return employeeList;
-    }
-
-    /**
-     * This attempts to log in an employee, and returns a string to signify what happened as a result of that operation.
-     * This differs from validateEmployee() in that validate only returns true/false depending on whether the credentials are
-     * valid, while login describes if the login succeeded or failed (and why that was the case) using a String.
-     * @param email The email address of the employee who is logging in.
-     * @param password The password of the employee who is logging in.
-     * @return A string (which should be passed to the endpoint) describing the result of this operation.
-     * @throws IOException if the underlying interaction with the database fails.
-     */
-    public String loginEmployee(String email, String password) throws IOException {
-        Employee toValidate = getEmployeeByEmail(email);
-        if(toValidate == null) return "That employee does not exist.";
-        if(!Objects.equals(toValidate.getPassword(), password)) return "Incorrect password for " + email;
-        return "Successfully logged in";
-    }
-
-    /**
-     * This validates a user's credentials against the database.
-     * @param email The email address of the user to be validated.
-     * @param password The password of the user to be validated.
-     * @return true if the user's credentials match an entry in the database, false otherwise.
-     * @throws IOException If the underlying interaction with the database fails.
-     */
-    public boolean validateEmployee(String email, String password) throws IOException {
-        Employee toValidate = getEmployeeByEmail(email);
-        if(toValidate == null) return false;
-        return Objects.equals(toValidate.getPassword(), password);
-    }
-
-    //Alternate way to validate an employee when there is already an Employee object representing them.
-    //This just saves some typing later on.
-    public boolean validateEmployee(Employee employee, String email, String password){
-        return employee.getEmail().equals(email) && employee.getPassword().equals(password);
     }
 
     /**
@@ -163,16 +142,15 @@ public class EmployeeRepository {
      * @param newRole        The new role of the account.
      * @return A string describing the result of this operation. This operation will fail if the
      * supplied credentials are incorrect or otherUserEmail does not point to any entry in the database.
-     * @throws IOException if the underlying database query fails.
      */
-    public String alterEmployeeRole(String email, String password, String otherUserEmail, Employee.Roles newRole) throws IOException {
+    public String alterEmployeeRole(String email, String password, String otherUserEmail, Employee.Roles newRole) {
         Employee manager = getEmployeeByEmail(email);
         Employee toPromote = getEmployeeByEmail(otherUserEmail);
         //Error handling
         if(manager == null) return "That manager account doesn't exist!";
         if(toPromote == null) return "The account to be promoted doesn't exist!";
-        if(!validateEmployee(manager, email, password)) return "The manager account failed to log in!";
-        if(manager.getRole() != Employee.Roles.MANAGER) return "That account does not have permission to perform this action!";
+        if(!Objects.equals(manager.password, password)) return "The manager account failed to log in!";
+        if(manager.role != Employee.Roles.MANAGER) return "That account does not have permission to perform this action!";
 
         //Performing the database action
         String sql = "UPDATE employees SET emplrole = ? WHERE emplemail = ?";
@@ -185,7 +163,7 @@ public class EmployeeRepository {
             stmt.execute();
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException(e);
+            return "Something went wrong, likely on the database side.";
         }
         return otherUserEmail + " is now a " + newRole + " kind of employee!";
     }

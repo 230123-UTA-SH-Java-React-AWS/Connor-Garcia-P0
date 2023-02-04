@@ -3,7 +3,6 @@ package com.revature.controller;
 import com.revature.model.Employee;
 import com.revature.service.EmployeeService;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
 

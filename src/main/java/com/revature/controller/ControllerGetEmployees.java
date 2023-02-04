@@ -10,8 +10,9 @@ public class ControllerGetEmployees extends Controller {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String httpVerb = exchange.getRequestMethod();
+        String body = getRequestBodyString(exchange);
         if(Objects.equals(httpVerb, "GET")) {
-            sendResponse(exchange, 200, EmployeeService.getAllEmployees());
+            sendResponse(exchange, 200, EmployeeService.getAllEmployees(body));
         } else {
             sendResponse(exchange, 403, "That action is prohibited.");
         }
