@@ -1,6 +1,5 @@
 package com.revature.repository;
 
-import com.revature.model.Employee;
 import com.revature.model.Ticket;
 import com.revature.utils.ConnectionUtil;
 
@@ -23,7 +22,7 @@ public class TicketRepository {
         //Checking the ticket in the database to see if it exists and can be updated
         Ticket ticketInDatabase = getTicketByID(id);
         if(ticketInDatabase == null) return "That ticket does not exist!";
-        if(ticketInDatabase.status != Ticket.StatusValues.PENDING) return "That ticket has already been finalized!";
+        if(ticketInDatabase.getStatus() != Ticket.StatusValues.PENDING) return "That ticket has already been finalized!";
 
         //Query the database to update the ticket
         String sql = "UPDATE tickets SET tickstatus = ? WHERE tickid = ?";
@@ -158,19 +157,19 @@ public class TicketRepository {
         // number of tickets in the database. If n is large enough, refactoring is required.
         for (int i = tickets.size() - 1; i >= 0; i--) { //Moving from end to start to avoid indexing problems when deleting entries
             if (filterEmplID != -1) {
-                if (tickets.get(i).employeeId != filterEmplID) {
+                if (tickets.get(i).getEmployeeId() != filterEmplID) {
                     tickets.remove(i);
                     continue;
                 }
             }
             if (filterType != null) {
-                if (tickets.get(i).reimbursementType != filterType) {
+                if (tickets.get(i).getReimbursementType() != filterType) {
                     tickets.remove(i);
                     continue;
                 }
             }
             if (filterStatus != null) {
-                if (tickets.get(i).status != filterStatus) {
+                if (tickets.get(i).getStatus() != filterStatus) {
                     tickets.remove(i);
                 }
             }

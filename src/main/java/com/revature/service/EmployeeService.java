@@ -42,15 +42,15 @@ public class EmployeeService extends Service{
 
         Employee manager = EMPLOYEE_REPOSITORY.getEmployeeByEmail(email);
         if (manager == null) return "That email address does not belong to any employee!";
-        if (!Objects.equals(manager.email, email) || !Objects.equals(manager.password, password))
+        if (!Objects.equals(manager.getEmail(), email) || !Objects.equals(manager.getPassword(), password))
             return "Failed to verify credentials; incorrect password.";
-        if (manager.role != Employee.Roles.MANAGER) return "Only a manager can perform this action.";
+        if (manager.getRole() != Employee.Roles.MANAGER) return "Only a manager can perform this action.";
 
         //By this line, we have successfully verified that the person attempting this action is a manager.
         //Create a list of all employees
         List<Employee> employeeList = EMPLOYEE_REPOSITORY.getAllEmployees();
         //Format all entries as JSON and return them
-        return jsonize(employeeList);
+        return makeJsonOf(employeeList);
     }
 
     //This function expects a valid employee from JSON.
@@ -109,7 +109,7 @@ public class EmployeeService extends Service{
             String password = passwordNode.asText();
             Employee toValidate = EMPLOYEE_REPOSITORY.getEmployeeByEmail(email);
             if (toValidate == null) return "That employee does not exist.";
-            if (!Objects.equals(toValidate.password, password)) return "Incorrect password for " + email;
+            if (!Objects.equals(toValidate.getPassword(), password)) return "Incorrect password for " + email;
             return "Successfully logged in";
         } catch (IOException e) {
             e.printStackTrace();

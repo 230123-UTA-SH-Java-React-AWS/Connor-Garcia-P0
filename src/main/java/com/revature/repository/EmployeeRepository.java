@@ -3,7 +3,6 @@ package com.revature.repository;
 import com.revature.model.Employee;
 import com.revature.utils.ConnectionUtil;
 
-import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -149,8 +148,8 @@ public class EmployeeRepository {
         //Error handling
         if(manager == null) return "That manager account doesn't exist!";
         if(toPromote == null) return "The account to be promoted doesn't exist!";
-        if(!Objects.equals(manager.password, password)) return "The manager account failed to log in!";
-        if(manager.role != Employee.Roles.MANAGER) return "That account does not have permission to perform this action!";
+        if(!Objects.equals(manager.getPassword(), password)) return "The manager account failed to log in!";
+        if(manager.getRole() != Employee.Roles.MANAGER) return "That account does not have permission to perform this action!";
 
         //Performing the database action
         String sql = "UPDATE employees SET emplrole = ? WHERE emplemail = ?";

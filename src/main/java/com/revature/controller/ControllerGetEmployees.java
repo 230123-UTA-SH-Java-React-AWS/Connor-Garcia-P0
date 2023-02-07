@@ -4,6 +4,7 @@ import com.revature.service.EmployeeService;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Objects;
 
 public class ControllerGetEmployees extends Controller {
@@ -11,6 +12,7 @@ public class ControllerGetEmployees extends Controller {
     public void handle(HttpExchange exchange) throws IOException {
         String httpVerb = exchange.getRequestMethod();
         String body = getRequestBodyString(exchange);
+
         if(Objects.equals(httpVerb, "GET")) {
             sendResponse(exchange, 200, EmployeeService.getAllEmployees(body));
         } else {

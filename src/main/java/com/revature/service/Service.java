@@ -11,7 +11,7 @@ public abstract class Service {
     protected static final TicketRepository TICKET_REPOSITORY = new TicketRepository();
 
     //Uses Jackson to convert any object to a string.
-    protected static String jsonize(Object o) {
+    protected static String makeJsonOf(Object o) {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonString = "";
         try {

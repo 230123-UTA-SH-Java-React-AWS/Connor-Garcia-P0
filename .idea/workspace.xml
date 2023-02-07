@@ -4,25 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ddab136a-6718-427f-ae98-4de5d0106f97" name="Changes" comment="Massive refactoring and functionality added to various Controllers">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerViewAllTickets.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerViewMyTickets.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/revature/service/Service.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/revature/service/EmployeeServiceTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="ddab136a-6718-427f-ae98-4de5d0106f97" name="Changes" comment="All major project functionality complete; stretch goals #1 and #2 implemented.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerDemoteUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerDemoteUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerFinalizeTicket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerFinalizeTicket.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerGetEmployees.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerGetEmployees.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerSubmitTicket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerSubmitTicket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerViewTicket.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/model/Employee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/model/Employee.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/model/Ticket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/model/Ticket.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/repository/EmployeeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/repository/EmployeeRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/repository/TicketRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/repository/TicketRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/service/EmployeeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/service/EmployeeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/service/Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/service/Service.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/service/TicketService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/service/TicketService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -184,7 +174,14 @@
       <option name="project" value="LOCAL" />
       <updated>1675388005729</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="All major project functionality complete; stretch goals #1 and #2 implemented.">
+      <created>1675550518086</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1675550518086</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -206,6 +203,7 @@
     <MESSAGE value="Created more scaffolding to support the rest of the project; project can now connect to a database." />
     <MESSAGE value="IntelliJ IDEA doing stuff automatically" />
     <MESSAGE value="Massive refactoring and functionality added to various Controllers" />
-    <option name="LAST_COMMIT_MESSAGE" value="Massive refactoring and functionality added to various Controllers" />
+    <MESSAGE value="All major project functionality complete; stretch goals #1 and #2 implemented." />
+    <option name="LAST_COMMIT_MESSAGE" value="All major project functionality complete; stretch goals #1 and #2 implemented." />
   </component>
 </project>

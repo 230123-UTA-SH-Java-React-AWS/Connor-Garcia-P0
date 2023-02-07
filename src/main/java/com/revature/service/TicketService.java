@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
-public class TicketService extends Service{
+public class TicketService extends Service {
 
     /**
      * This will finalize a ticket in the database by changing its status to be either
@@ -62,9 +62,9 @@ public class TicketService extends Service{
         //Verifying that the credentials given are correct and come from a manager
         Employee manager = EMPLOYEE_REPOSITORY.getEmployeeByEmail(email);
         if (manager == null) return "That email address does not belong to any employee!";
-        if (!Objects.equals(manager.email, email) || !Objects.equals(manager.password, password))
+        if (!Objects.equals(manager.getEmail(), email) || !Objects.equals(manager.getPassword(), password))
             return "Failed to verify credentials; incorrect password.";
-        if (manager.role != Employee.Roles.MANAGER) return "Only a manager can perform this action.";
+        if (manager.getRole() != Employee.Roles.MANAGER) return "Only a manager can perform this action.";
 
         //By this line, we have successfully verified that the person attempting this action is a manager.
         //Update the ticket in the database and tell the user what happened
@@ -138,15 +138,15 @@ public class TicketService extends Service{
         //Verifying that the credentials given are correct and come from a manager
         Employee manager = EMPLOYEE_REPOSITORY.getEmployeeByEmail(email);
         if (manager == null) return "That email address does not belong to any employee!";
-        if (!Objects.equals(manager.email, email) || !Objects.equals(manager.password, password))
+        if (!Objects.equals(manager.getEmail(), email) || !Objects.equals(manager.getPassword(), password))
             return "Failed to verify credentials; incorrect password.";
-        if (manager.role != Employee.Roles.MANAGER) return "Only a manager can perform this action.";
+        if (manager.getRole() != Employee.Roles.MANAGER) return "Only a manager can perform this action.";
 
         //By this line, we have successfully verified that the person attempting this action is a manager.
         //Create a list of all tickets based on the filters
         List<Ticket> tickets = TICKET_REPOSITORY.getTicketsFiltered(emplID, status, type);
         //Format all entries as JSON and return them
-        return jsonize(tickets);
+        return makeJsonOf(tickets);
     }
 
     //This function is similar to getTicketsFiltered, except it only gets an employee's own tickets with their
@@ -203,13 +203,13 @@ public class TicketService extends Service{
         //Verifying that the credentials given are correct
         Employee employee = EMPLOYEE_REPOSITORY.getEmployeeByEmail(email);
         if (employee == null) return "That email address does not belong to any employee!";
-        if (!Objects.equals(employee.email, email) || !Objects.equals(employee.password, password))
+        if (!Objects.equals(employee.getEmail(), email) || !Objects.equals(employee.getPassword(), password))
             return "Failed to verify credentials; incorrect password.";
 
         //Create a list of all tickets from this employee, based on the given filters
-        List<Ticket> tickets = TICKET_REPOSITORY.getTicketsFiltered(employee.id, status, type);
+        List<Ticket> tickets = TICKET_REPOSITORY.getTicketsFiltered(employee.getId(), status, type);
         //Format all entries as JSON and return them
-        return jsonize(tickets);
+        return makeJsonOf(tickets);
     }
 
     /**
@@ -266,9 +266,9 @@ public class TicketService extends Service{
         //Checking the credentials of the employee to ensure that they are valid.
         Employee employee = EMPLOYEE_REPOSITORY.getEmployeeByEmail(email);
         if(employee == null) return "There is no employee with that email address!";
-        if(!Objects.equals(employee.password, password)) return "Failed to verify credentials of " + email;
+        if(!Objects.equals(employee.getPassword(), password)) return "Failed to verify credentials of " + email;
 
         //Finally, running the database query
-        return TICKET_REPOSITORY.createNewTicket(employee.id, reimbursementType, amount, description);
+        return TICKET_REPOSITORY.createNewTicket(employee.getId(), reimbursementType, amount, description);
     }
 }
