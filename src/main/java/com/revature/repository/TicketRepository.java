@@ -115,7 +115,16 @@ public class TicketRepository {
         ArrayList<Ticket> tickets = new ArrayList<>();
 
         //Querying the database
-        String sql = "SELECT * FROM Tickets";
+        String sql = "SELECT * FROM tickets";
+        if(filterEmplID != -1) {
+            sql += " INTERSECT SELECT * FROM TICKETS WHERE tickemplid = '" + filterEmplID + "'";
+        }
+        if(filterStatus != null){
+            sql += " INTERSECT SELECT * FROM TICKETS WHERE tickstatus = '" + filterStatus + "'";
+        }
+        if(filterType != null){
+            sql += " INTERSECT SELECT * FROM TICKETS WHERE ticktype = '" + filterType + "'";
+        }
         //Create the connection
         try (Connection con = ConnectionUtil.getConnection()) {
             //Create the querying object
@@ -147,32 +156,8 @@ public class TicketRepository {
                 tickets.add(ticket);
             }
         } catch (SQLException | IllegalStateException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
-        }
-
-        //Now that we have the list of tickets, filter based on the parameters given.
-        //Ideally, this would have been done on the database's end (chained WHERE clauses),
-        // but that would have taken a huge amount of branching logic which this avoids.
-        //The problem that this approach creates is that the conditions are checked n times, where n is the
-        // number of tickets in the database. If n is large enough, refactoring is required.
-        for (int i = tickets.size() - 1; i >= 0; i--) { //Moving from end to start to avoid indexing problems when deleting entries
-            if (filterEmplID != -1) {
-                if (tickets.get(i).getEmployeeId() != filterEmplID) {
-                    tickets.remove(i);
-                    continue;
-                }
-            }
-            if (filterType != null) {
-                if (tickets.get(i).getReimbursementType() != filterType) {
-                    tickets.remove(i);
-                    continue;
-                }
-            }
-            if (filterStatus != null) {
-                if (tickets.get(i).getStatus() != filterStatus) {
-                    tickets.remove(i);
-                }
-            }
         }
         return tickets;
     }

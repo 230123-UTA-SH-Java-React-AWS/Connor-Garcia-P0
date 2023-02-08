@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Scanner;
 
 public class TicketService extends Service {
 
@@ -83,18 +84,18 @@ public class TicketService extends Service {
      */
     public static String getTicketsFiltered(String json){
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode;
+        JsonNode rootNode;
         try {
-            jsonNode = objectMapper.readTree(json);
+            rootNode = objectMapper.readTree(json);
         } catch (IOException e) {
             e.printStackTrace();
             return "Failed to get all tickets";
         }
-        JsonNode emailNode = jsonNode.get("email");
-        JsonNode passwordNode = jsonNode.get("password");
-        JsonNode fromEmployeeNode = jsonNode.get("fromEmployee");
-        JsonNode statusNode = jsonNode.get("status");
-        JsonNode typeNode = jsonNode.get("type");
+        JsonNode emailNode = rootNode.get("email");
+        JsonNode passwordNode = rootNode.get("password");
+        JsonNode fromEmployeeNode = rootNode.get("fromEmployee");
+        JsonNode statusNode = rootNode.get("status");
+        JsonNode typeNode = rootNode.get("type");
         if (emailNode == null || passwordNode == null) {
             return """
                     Could not add employee; malformed request.
@@ -261,6 +262,10 @@ public class TicketService extends Service {
         } catch (NumberFormatException exception){
             return "Could not parse the amount this ticket was for";
         }
+        if(amount.compareTo(new BigDecimal(0)) <= 0){
+            return "You cannot request a reimbursement for that amount of money!";
+        }
+
         String description = descriptionNode.asText();
 
         //Checking the credentials of the employee to ensure that they are valid.
