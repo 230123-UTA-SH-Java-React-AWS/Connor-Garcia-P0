@@ -64,7 +64,7 @@ public class TicketService extends Service {
         //Verifying that the credentials given are correct and come from a manager
         Employee manager = EMPLOYEE_REPOSITORY.getEmployeeByEmail(email);
         if (manager == null) return new Controller.WebTuple(403, "Failed to verify credentials.");
-        if (!Objects.equals(manager.getEmail(), email) || !Objects.equals(manager.getPassword(), password))
+        if (!Objects.equals(manager.getEmail(), email) || !Objects.equals(manager.getPassword(), password.hashCode()))
             return new Controller.WebTuple(403, "Failed to verify credentials.");
         if (manager.getRole() != Employee.Roles.MANAGER) return new Controller.WebTuple(403, "Only a manager can perform this action.");
 
@@ -140,7 +140,7 @@ public class TicketService extends Service {
         //Verifying that the credentials given are correct and come from a manager
         Employee manager = EMPLOYEE_REPOSITORY.getEmployeeByEmail(email);
         if (manager == null) return new Controller.WebTuple(403, "Failed to verify credentials.");
-        if (!Objects.equals(manager.getEmail(), email) || !Objects.equals(manager.getPassword(), password))
+        if (!Objects.equals(manager.getEmail(), email) || !Objects.equals(manager.getPassword(), password.hashCode()))
             return new Controller.WebTuple(403, "Failed to verify credentials.");
         if (manager.getRole() != Employee.Roles.MANAGER) return new Controller.WebTuple(403, "Only a manager can perform this action.");
 
@@ -205,7 +205,7 @@ public class TicketService extends Service {
         //Verifying that the credentials given are correct
         Employee employee = EMPLOYEE_REPOSITORY.getEmployeeByEmail(email);
         if (employee == null) return new Controller.WebTuple(403, "Failed to verify credentials");
-        if (!Objects.equals(employee.getEmail(), email) || !Objects.equals(employee.getPassword(), password))
+        if (!Objects.equals(employee.getEmail(), email) || !Objects.equals(employee.getPassword(), password.hashCode()))
             return new Controller.WebTuple(403,"Failed to verify credentials.");
 
         //Create a list of all tickets from this employee, based on the given filters
@@ -261,7 +261,7 @@ public class TicketService extends Service {
         //Checking the credentials of the employee to ensure that they are valid.
         Employee employee = EMPLOYEE_REPOSITORY.getEmployeeByEmail(email);
         if(employee == null) return new Controller.WebTuple(403, "Failed to verify credentials.");
-        if(!Objects.equals(employee.getPassword(), password)) return new Controller.WebTuple(403, "Failed to verify credentials.");
+        if(!Objects.equals(employee.getPassword(), password.hashCode())) return new Controller.WebTuple(403, "Failed to verify credentials.");
 
         //Input validation
         BigDecimal amount;

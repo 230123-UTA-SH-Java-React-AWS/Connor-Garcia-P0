@@ -43,13 +43,15 @@ public class EmployeeService extends Service{
 
         Employee manager = EMPLOYEE_REPOSITORY.getEmployeeByEmail(email);
         if (manager == null) return new Controller.WebTuple(403, "Failed to verify credentials.");
-        if (!Objects.equals(manager.getEmail(), email) || !Objects.equals(manager.getPassword(), password))
+        if (!Objects.equals(manager.getEmail(), email) || !Objects.equals(manager.getPassword(), password.hashCode()))
             return new Controller.WebTuple(403, "Failed to verify credentials.");
         if (manager.getRole() != Employee.Roles.MANAGER) return new Controller.WebTuple(403, "Only a manager can perform this action.");
 
         //By this line, we have successfully verified that the person attempting this action is a manager.
         //Create a list of all employees
         List<Employee> employeeList = EMPLOYEE_REPOSITORY.getAllEmployees();
+        if(employeeList == null)
+            return new Controller.WebTuple(500, "Something went wrong while retrieving the employee list");
         //Format all entries as JSON and return them
         return new Controller.WebTuple(200, makeJsonOf(employeeList));
     }
@@ -113,7 +115,7 @@ public class EmployeeService extends Service{
             String password = passwordNode.asText();
             Employee toValidate = EMPLOYEE_REPOSITORY.getEmployeeByEmail(email);
             if (toValidate == null) return new Controller.WebTuple(403, "Incorrect email address or password.");
-            if (!Objects.equals(toValidate.getPassword(), password)) return new Controller.WebTuple(403, "Incorrect email address or password.");
+            if (!Objects.equals(toValidate.getPassword(), password.hashCode())) return new Controller.WebTuple(403, "Incorrect email address or password.");
             return new Controller.WebTuple(200, "Successfully logged in");
         } catch (IOException e) {
             e.printStackTrace();

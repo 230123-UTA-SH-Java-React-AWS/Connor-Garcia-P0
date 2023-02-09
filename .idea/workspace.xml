@@ -4,22 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ddab136a-6718-427f-ae98-4de5d0106f97" name="Changes" comment="Made searching for filtered tickets more efficient and more readable at the same time">
+    <list default="true" id="ddab136a-6718-427f-ae98-4de5d0106f97" name="Changes" comment="Migrated the Ticket class to a record.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/controller/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerDemoteUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerDemoteUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerFinalizeTicket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerFinalizeTicket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerGetEmployees.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerGetEmployees.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerLoginUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerLoginUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerPromoteUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerPromoteUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerRegisterUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerRegisterUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerSubmitTicket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerSubmitTicket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerViewAllTickets.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerViewAllTickets.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerViewMyTickets.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/controller/ControllerViewMyTickets.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/model/Employee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/model/Employee.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/model/Ticket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/model/Ticket.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/repository/EmployeeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/repository/EmployeeRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/repository/TicketRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/repository/TicketRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/service/EmployeeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/service/EmployeeService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/revature/service/TicketService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/revature/service/TicketService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/revature/service/EmployeeServiceTest.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -201,7 +194,28 @@
       <option name="project" value="LOCAL" />
       <updated>1675829354327</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Responses now include appropriate status codes to further indicate what happened when an endpoint was used.">
+      <created>1675902171180</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1675902171180</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Migrated password to an integer (supporting hashing operations) and converted this class to a record.">
+      <created>1675905366337</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1675905366337</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Migrated the Ticket class to a record.">
+      <created>1675905449426</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1675905449426</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -226,6 +240,9 @@
     <MESSAGE value="All major project functionality complete; stretch goals #1 and #2 implemented." />
     <MESSAGE value="Some refactoring" />
     <MESSAGE value="Made searching for filtered tickets more efficient and more readable at the same time" />
-    <option name="LAST_COMMIT_MESSAGE" value="Made searching for filtered tickets more efficient and more readable at the same time" />
+    <MESSAGE value="Responses now include appropriate status codes to further indicate what happened when an endpoint was used." />
+    <MESSAGE value="Migrated password to an integer (supporting hashing operations) and converted this class to a record." />
+    <MESSAGE value="Migrated the Ticket class to a record." />
+    <option name="LAST_COMMIT_MESSAGE" value="Migrated the Ticket class to a record." />
   </component>
 </project>

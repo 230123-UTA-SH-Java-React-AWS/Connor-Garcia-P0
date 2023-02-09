@@ -13,6 +13,10 @@ import java.util.List;
  * This class is how the [TicketService] class interacts with the database.
  */
 public class TicketRepository {
+    //Attempts to finalize a ticket, setting its status to what is specified in the parameter.
+    //You cannot un-finalize a ticket by changing its status to PENDING, or by changing a ticket which is not PENDING.
+    //Returns a WebTuple containing a description of what happened when this function was run and a
+    // relevant HTTP status code.
     public Controller.WebTuple finalizeTicketByID(int id, Ticket.StatusValues newStatus) {
         //Bad input handling
         if (newStatus == null)
@@ -30,7 +34,7 @@ public class TicketRepository {
         //Create the connection
         try (Connection con = ConnectionUtil.getConnection()) {
             PreparedStatement stmt = con.prepareStatement(sql);
-            stmt.setString(1, newStatus.toString());
+            stmt.setInt(1, newStatus.ordinal() + 1); //Hard to maintain, but values in the status enum map to the ones in the database like this.
             stmt.setInt(2, id);
             //Execute the query
             stmt.execute();
@@ -43,10 +47,13 @@ public class TicketRepository {
 
     public Ticket getTicketByID(int id) {
         List<Ticket> ticketList = new ArrayList<>();
-        Ticket ticket = null;
+        Ticket result = null;
 
         //Querying the database
-        String sql = "SELECT * FROM tickets WHERE tickid = ?";
+        String sql = "SELECT tickid, tickemplid, ticsname, tictname, tickamount, tickdescription FROM tickets " +
+                "INNER JOIN statuses on tickstatus = ticsid " +
+                "INNER JOIN tickettypes on ticktype = tictid " +
+                "WHERE tickid = ?";
         //Create the connection
         try (Connection con = ConnectionUtil.getConnection()) {
             //Create the querying object
@@ -69,31 +76,35 @@ public class TicketRepository {
                     default -> Ticket.ReimbursementType.OTHER;
                 };
 
-                Ticket tckt = new Ticket(status, type, new BigDecimal(rs.getString(5)), rs.getString(6), rs.getInt(2));
-                ticketList.add(tckt);
+                Ticket ticket = new Ticket(
+                        rs.getInt(2),
+                        rs.getBigDecimal(5),
+                        rs.getString(6),
+                        type,
+                        status);
+                ticketList.add(ticket);
             }
         } catch (SQLException | IllegalStateException e) {
             e.printStackTrace();
             return null;
         }
 
-        if (ticketList.size() > 0) ticket = ticketList.get(0);
-        return ticket;
+        if (ticketList.size() > 0) result = ticketList.get(0);
+        return result;
     }
 
 
     //Attempt to add a ticket to the database; this will return a String indicating
     // what happened when this function was called
     public Controller.WebTuple createNewTicket(int employeeID, Ticket.ReimbursementType type, BigDecimal amount, String description) {
-        String sql = "INSERT INTO TICKETS (tickemplid, tickstatus, ticktype, tickamount, tickdescription) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO TICKETS (tickemplid, ticktype, tickamount, tickdescription) VALUES (?, ?, ?, ?)";
         try (Connection con = ConnectionUtil.getConnection()) {
             PreparedStatement prst = con.prepareStatement(sql);
 
             prst.setInt(1, employeeID);
-            prst.setString(2, Ticket.StatusValues.PENDING.toString());
-            prst.setString(3, type.toString());
-            prst.setString(4, amount.toString());
-            prst.setString(5, description);
+            prst.setInt(2, type.ordinal() + 1);
+            prst.setBigDecimal(3, amount);
+            prst.setString(4, description);
 
             prst.execute();
         } catch (SQLException e) {
@@ -116,15 +127,18 @@ public class TicketRepository {
         ArrayList<Ticket> tickets = new ArrayList<>();
 
         //Querying the database
-        String sql = "SELECT * FROM tickets";
+        String sql = "SELECT tickid, tickemplid, ticsname, tictname, tickamount, tickdescription FROM tickets " +
+                "INNER JOIN statuses on tickstatus = ticsid " +
+                "INNER JOIN tickettypes on ticktype = tictid " +
+                "WHERE true";
         if(filterEmplID != -1) {
-            sql += " INTERSECT SELECT * FROM TICKETS WHERE tickemplid = '" + filterEmplID + "'";
+            sql += " AND tickemplid = '" + filterEmplID + "'";
         }
         if(filterStatus != null){
-            sql += " INTERSECT SELECT * FROM TICKETS WHERE tickstatus = '" + filterStatus + "'";
+            sql += " AND ticsname = '" + filterStatus + "'";
         }
         if(filterType != null){
-            sql += " INTERSECT SELECT * FROM TICKETS WHERE ticktype = '" + filterType + "'";
+            sql += " AND tictname = '" + filterType + "'";
         }
         //Create the connection
         try (Connection con = ConnectionUtil.getConnection()) {
@@ -134,7 +148,7 @@ public class TicketRepository {
             ResultSet rs = stmt.executeQuery(sql);
             //Mapping information from a table to our data structure
             while (rs.next()) {
-                Ticket.ReimbursementType reimbursementType = switch (rs.getString(4)) {
+                Ticket.ReimbursementType type = switch (rs.getString(4)) {
                     case "TRAVEL" -> Ticket.ReimbursementType.TRAVEL;
                     case "LODGING" -> Ticket.ReimbursementType.LODGING;
                     case "FOOD" -> Ticket.ReimbursementType.FOOD;
@@ -148,12 +162,12 @@ public class TicketRepository {
                             throw new IllegalStateException("BAD DATA IN TICKET TABLE");
                 };
 
-                Ticket ticket = new Ticket(status,
-                        reimbursementType,
-                        new BigDecimal(rs.getString(5)),
+                Ticket ticket = new Ticket(
+                        rs.getInt(2),
+                        rs.getBigDecimal(5),
                         rs.getString(6),
-                        rs.getInt(2)
-                );
+                        type,
+                        status);
                 tickets.add(ticket);
             }
         } catch (SQLException | IllegalStateException e) {

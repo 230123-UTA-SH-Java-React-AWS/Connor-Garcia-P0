@@ -13,19 +13,17 @@ import java.util.Objects;
  * This class is how [EmployeeService] interacts with the database
  */
 public class EmployeeRepository {
-
     //Attempt to add an employee to the database; this will return a String indicating
     // what happened when this function was called
     public Controller.WebTuple createNewEmployee(String email, String password) {
         if (getEmployeeByEmail(email) != null) return new Controller.WebTuple(403, "That email address is already in use.");
 
-        String sql = "INSERT INTO Employees (emplEmail, emplPassword, emplRole) values (?, ?, ?)";
+        String sql = "INSERT INTO Employees (emplEmail, emplPassword) values (?, ?)";
         try (Connection con = ConnectionUtil.getConnection()) {
             PreparedStatement prst = con.prepareStatement(sql);
 
             prst.setString(1, email);
-            prst.setString(2, password);
-            prst.setString(3, Employee.Roles.STANDARD.toString());
+            prst.setInt(2, password.hashCode());
 
             prst.execute();
         } catch (SQLException e) {
@@ -46,7 +44,9 @@ public class EmployeeRepository {
         Employee employee = null;
 
         //Querying the database
-        String sql = "SELECT * FROM Employees WHERE emplemail = ?";
+        String sql = "SELECT emplid, emplemail, emplpassword, rolename FROM Employees " +
+                "INNER JOIN roles ON emplrole = roleid " +
+                "WHERE emplemail = ?";
         //Create the connection
         try (Connection con = ConnectionUtil.getConnection()) {
             //Create the querying object
@@ -63,7 +63,7 @@ public class EmployeeRepository {
                     case "STANDARD" -> Employee.Roles.STANDARD;
                     default -> throw new IllegalStateException("BAD DATA IN EMPLOYEE TABLE");
                 };
-                Employee empl = new Employee(rs.getString(2), rs.getString(3), eRole, rs.getInt(1));
+                Employee empl = new Employee(rs.getString(2), rs.getInt(3), eRole, rs.getInt(1));
                 employeeList.add(empl);
             }
         } catch (SQLException | IllegalStateException e) {
@@ -110,7 +110,8 @@ public class EmployeeRepository {
         ArrayList<Employee> employeeList = new ArrayList<>();
 
         //Querying the database
-        String sql = "SELECT * FROM Employees";
+        String sql = "SELECT emplid, emplemail, emplpassword, rolename FROM Employees " +
+                "INNER JOIN roles ON emplrole = roleid ";
         //Create the connection
         try (Connection con = ConnectionUtil.getConnection()) {
             //Create the querying object
@@ -122,11 +123,12 @@ public class EmployeeRepository {
                 Employee.Roles eRole = Employee.Roles.STANDARD;
                 if(Objects.equals(rs.getString(4), "MANAGER")) eRole  = Employee.Roles.MANAGER;
 
-                Employee empl = new Employee(rs.getString(2), rs.getString(3), eRole, rs.getInt(1));
+                Employee empl = new Employee(rs.getString(2), rs.getInt(3), eRole, rs.getInt(1));
                 employeeList.add(empl);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            return null;
         }
         return employeeList;
     }
@@ -149,7 +151,7 @@ public class EmployeeRepository {
         //Error handling - the order here is important. In this order, a potential bad actor cannot use this function to determine
         // what employees do and do not exist unless they are already a manager.
         if(manager == null) return new Controller.WebTuple(403, "Failed to verify credentials.");
-        if(!Objects.equals(manager.getPassword(), password)) return new Controller.WebTuple(403, "Failed to verify credentials.");
+        if(!Objects.equals(manager.getPassword(), password.hashCode())) return new Controller.WebTuple(403, "Failed to verify credentials.");
         if(manager.getRole() != Employee.Roles.MANAGER) return new Controller.WebTuple(403, "You are not authorized to perform this action.");
         if(toPromote == null) return new Controller.WebTuple(400, "The account whose role you are changing doesn't exist!");
 
@@ -158,7 +160,7 @@ public class EmployeeRepository {
         //Create the connection
         try (Connection con = ConnectionUtil.getConnection()) {
             PreparedStatement stmt = con.prepareStatement(sql);
-            stmt.setString(1, newRole.toString());
+            stmt.setInt(1, newRole.ordinal() + 1);
             stmt.setString(2, otherUserEmail);
             //Execute the query
             stmt.execute();
