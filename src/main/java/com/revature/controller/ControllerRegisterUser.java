@@ -12,10 +12,9 @@ public class ControllerRegisterUser extends Controller {
         if(httpVerb.equals("POST")){
             String body = getRequestBodyString(exchange);
             sendResponse(exchange,
-                    200,
                     EmployeeService.registerEmployee(body));
         } else {
-            sendResponse(exchange, 403, "That action is prohibited.");
+            sendResponse(exchange, 405, "That action is prohibited.");
         }
     }
 }

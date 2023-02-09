@@ -12,10 +12,9 @@ public class ControllerSubmitTicket extends Controller {
         if(httpVerb.equals("POST")){
             String body = getRequestBodyString(exchange);
             sendResponse(exchange,
-                    200,
                     TicketService.submitTicket(body));
         } else {
-            sendResponse(exchange, 403, "That action is prohibited.");
+            sendResponse(exchange, 405, "That action is prohibited.");
         }
     }
 }

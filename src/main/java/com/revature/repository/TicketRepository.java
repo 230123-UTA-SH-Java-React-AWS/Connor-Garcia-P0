@@ -1,5 +1,6 @@
 package com.revature.repository;
 
+import com.revature.controller.Controller;
 import com.revature.model.Ticket;
 import com.revature.utils.ConnectionUtil;
 
@@ -12,17 +13,17 @@ import java.util.List;
  * This class is how the [TicketService] class interacts with the database.
  */
 public class TicketRepository {
-    public String finalizeTicketByID(int id, Ticket.StatusValues newStatus) {
+    public Controller.WebTuple finalizeTicketByID(int id, Ticket.StatusValues newStatus) {
         //Bad input handling
         if (newStatus == null)
-            return "That is not a valid status for tickets.";
+            return new Controller.WebTuple(400, "That is not a valid status for tickets.");
         if (newStatus == Ticket.StatusValues.PENDING)
-            return "Tickets cannot be made pending after having been finalized!";
+            return new Controller.WebTuple(403, "Tickets cannot be made pending after having been finalized!");
 
         //Checking the ticket in the database to see if it exists and can be updated
         Ticket ticketInDatabase = getTicketByID(id);
-        if(ticketInDatabase == null) return "That ticket does not exist!";
-        if(ticketInDatabase.getStatus() != Ticket.StatusValues.PENDING) return "That ticket has already been finalized!";
+        if(ticketInDatabase == null) return new Controller.WebTuple(404, "That ticket does not exist!");
+        if(ticketInDatabase.getStatus() != Ticket.StatusValues.PENDING) return new Controller.WebTuple(403, "That ticket has already been finalized!");
 
         //Query the database to update the ticket
         String sql = "UPDATE tickets SET tickstatus = ? WHERE tickid = ?";
@@ -35,9 +36,9 @@ public class TicketRepository {
             stmt.execute();
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Something went wrong, likely on the database side.";
+            return new Controller.WebTuple(500, "Something went wrong.");
         }
-        return "The ticket was successfully updated.";
+        return new Controller.WebTuple(200, "The ticket was successfully updated.");
     }
 
     public Ticket getTicketByID(int id) {
@@ -83,7 +84,7 @@ public class TicketRepository {
 
     //Attempt to add a ticket to the database; this will return a String indicating
     // what happened when this function was called
-    public String createNewTicket(int employeeID, Ticket.ReimbursementType type, BigDecimal amount, String description) {
+    public Controller.WebTuple createNewTicket(int employeeID, Ticket.ReimbursementType type, BigDecimal amount, String description) {
         String sql = "INSERT INTO TICKETS (tickemplid, tickstatus, ticktype, tickamount, tickdescription) VALUES (?, ?, ?, ?, ?)";
         try (Connection con = ConnectionUtil.getConnection()) {
             PreparedStatement prst = con.prepareStatement(sql);
@@ -97,9 +98,9 @@ public class TicketRepository {
             prst.execute();
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Ticket could not be submitted.";
+            return new Controller.WebTuple(500, "Ticket could not be submitted.");
         }
-        return "Ticket was successfully submitted.";
+        return new Controller.WebTuple(200,"Ticket was successfully submitted.");
     }
 
     /**

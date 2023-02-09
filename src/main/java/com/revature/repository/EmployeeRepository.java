@@ -1,5 +1,6 @@
 package com.revature.repository;
 
+import com.revature.controller.Controller;
 import com.revature.model.Employee;
 import com.revature.utils.ConnectionUtil;
 
@@ -15,8 +16,8 @@ public class EmployeeRepository {
 
     //Attempt to add an employee to the database; this will return a String indicating
     // what happened when this function was called
-    public String createNewEmployee(String email, String password) {
-        if (getEmployeeByEmail(email) != null) return "That email address is already in use.";
+    public Controller.WebTuple createNewEmployee(String email, String password) {
+        if (getEmployeeByEmail(email) != null) return new Controller.WebTuple(403, "That email address is already in use.");
 
         String sql = "INSERT INTO Employees (emplEmail, emplPassword, emplRole) values (?, ?, ?)";
         try (Connection con = ConnectionUtil.getConnection()) {
@@ -29,10 +30,10 @@ public class EmployeeRepository {
             prst.execute();
         } catch (SQLException e) {
             e.printStackTrace();
-            return email + " could not be registered.";
+            return new Controller.WebTuple(500, email + " could not be registered.");
         }
 
-        return email + " was successfully registered.";
+        return new Controller.WebTuple(200, email + " was successfully registered.");
     }
 
     /**
@@ -142,14 +143,15 @@ public class EmployeeRepository {
      * @return A string describing the result of this operation. This operation will fail if the
      * supplied credentials are incorrect or otherUserEmail does not point to any entry in the database.
      */
-    public String alterEmployeeRole(String email, String password, String otherUserEmail, Employee.Roles newRole) {
+    public Controller.WebTuple alterEmployeeRole(String email, String password, String otherUserEmail, Employee.Roles newRole) {
         Employee manager = getEmployeeByEmail(email);
         Employee toPromote = getEmployeeByEmail(otherUserEmail);
-        //Error handling
-        if(manager == null) return "That manager account doesn't exist!";
-        if(toPromote == null) return "The account to be promoted doesn't exist!";
-        if(!Objects.equals(manager.getPassword(), password)) return "The manager account failed to log in!";
-        if(manager.getRole() != Employee.Roles.MANAGER) return "That account does not have permission to perform this action!";
+        //Error handling - the order here is important. In this order, a potential bad actor cannot use this function to determine
+        // what employees do and do not exist unless they are already a manager.
+        if(manager == null) return new Controller.WebTuple(403, "Failed to verify credentials.");
+        if(!Objects.equals(manager.getPassword(), password)) return new Controller.WebTuple(403, "Failed to verify credentials.");
+        if(manager.getRole() != Employee.Roles.MANAGER) return new Controller.WebTuple(403, "You are not authorized to perform this action.");
+        if(toPromote == null) return new Controller.WebTuple(400, "The account whose role you are changing doesn't exist!");
 
         //Performing the database action
         String sql = "UPDATE employees SET emplrole = ? WHERE emplemail = ?";
@@ -162,8 +164,8 @@ public class EmployeeRepository {
             stmt.execute();
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Something went wrong, likely on the database side.";
+            return new Controller.WebTuple(500, "Something went wrong, likely on the database side.");
         }
-        return otherUserEmail + " is now a " + newRole + " kind of employee!";
+        return new Controller.WebTuple(200, otherUserEmail + " is now a " + newRole + " kind of employee!");
     }
 }

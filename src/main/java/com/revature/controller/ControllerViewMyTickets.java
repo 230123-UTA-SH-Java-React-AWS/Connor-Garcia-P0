@@ -12,10 +12,9 @@ public class ControllerViewMyTickets extends Controller{
         if(httpVerb.equals("GET")){
             String body = getRequestBodyString(exchange);
             sendResponse(exchange,
-                    200,
                     TicketService.getMyTickets(body));
         } else {
-            sendResponse(exchange, 403, "That action is prohibited.");
+            sendResponse(exchange, 405, "That action is prohibited.");
         }
     }
 }

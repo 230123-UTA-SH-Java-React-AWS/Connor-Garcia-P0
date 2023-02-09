@@ -13,10 +13,9 @@ public class ControllerPromoteUser extends Controller {
         if(httpVerb.equals("PUT")){
             String body = getRequestBodyString(exchange);
             sendResponse(exchange,
-                    200,
                     EmployeeService.alterEmployeeRole(body, Employee.Roles.MANAGER));
         } else {
-            sendResponse(exchange, 403, "That action is prohibited.");
+            sendResponse(exchange, 405, "That action is prohibited.");
         }
     }
 }

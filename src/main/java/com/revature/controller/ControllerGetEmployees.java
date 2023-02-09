@@ -14,9 +14,9 @@ public class ControllerGetEmployees extends Controller {
         String body = getRequestBodyString(exchange);
 
         if(Objects.equals(httpVerb, "GET")) {
-            sendResponse(exchange, 200, EmployeeService.getAllEmployees(body));
+            sendResponse(exchange, EmployeeService.getAllEmployees(body));
         } else {
-            sendResponse(exchange, 403, "That action is prohibited.");
+            sendResponse(exchange, 405, "That action is prohibited.");
         }
     }
 }

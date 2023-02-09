@@ -15,7 +15,11 @@ public abstract class Controller implements HttpHandler {
         os.close();
     }
 
-    protected String getRequestBodyString(HttpExchange exchange){
+    protected void sendResponse(HttpExchange exchange, WebTuple tuple) throws IOException {
+        sendResponse(exchange, tuple.statusCode(), tuple.response());
+    }
+
+    protected String getRequestBodyString(HttpExchange exchange) {
         InputStream is = exchange.getRequestBody();
 
         //Converting InputStream into a String
@@ -32,4 +36,8 @@ public abstract class Controller implements HttpHandler {
         }
         return textBuilder.toString();
     }
+
+    //This subclass is used by Controllers to send both the information about what happened when fulfilling a request and
+    // an HTTP status code relevant to that response.
+    public record WebTuple(int statusCode, String response) {}
 }
