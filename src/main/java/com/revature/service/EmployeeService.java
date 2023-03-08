@@ -29,14 +29,14 @@ public class EmployeeService extends Service{
         JsonNode emailNode = jsonNode.get("email");
         JsonNode passwordNode = jsonNode.get("password");
         if (emailNode == null || passwordNode == null) {
-            return new Controller.WebTuple(400, """
-                    Could not add employee; missing data in request.
-                    Correct format for request body:
-                      {
-                        "email":"<email address>",
-                        "password":"<password>"
-                      }
-                    """);
+            return new Controller.WebTuple(400, 
+                    "Could not add employee; missing data in request.\n" +
+                    "Correct format for request body:\n" +
+                      "{\n" +
+                        "  'email':'<email address>',\n" +
+                        "  'password':'<password>'\n" +
+                      "}\n" +
+                    ");");
         }
         String email = emailNode.asText();
         String password = passwordNode.asText();
@@ -66,14 +66,14 @@ public class EmployeeService extends Service{
             JsonNode emailNode = jsonNode.get("email");
             JsonNode passwordNode = jsonNode.get("password");
             if (emailNode == null || passwordNode == null) {
-                return new Controller.WebTuple(400, """
-                        Could not add employee; missing data in request.
-                        Correct format for request body:
-                          {
-                            "email":"<email address>",
-                            "password":"<password>"
-                          }
-                        """);
+                return new Controller.WebTuple(400, 
+                        "Could not add employee; missing data in request.\n" +
+                        "Correct format for request body:\n" +
+                        "  {\n" +
+                        "    'email':'<email address>'',\n" +
+                        "    'password':'<password>'\n" +
+                        "  }\n"
+                        );
             }
             String email = emailNode.asText();
             String password = passwordNode.asText();
@@ -102,14 +102,14 @@ public class EmployeeService extends Service{
             JsonNode emailNode = jsonNode.get("email");
             JsonNode passwordNode = jsonNode.get("password");
             if (emailNode == null || passwordNode == null) {
-                return new Controller.WebTuple(400, """
-                        Could not add employee; missing data in request.
-                        Correct format for request body:
-                          {
-                            "email":"<email address>",
-                            "password":"<password>"
-                          }
-                        """);
+                return new Controller.WebTuple(400, 
+                        "Could not add employee; missing data in request.\n" +
+                        "Correct format for request body:\n" +
+                        "  {\n" +
+                        "    'email':'<email address>'',\n" +
+                        "    'password':'<password>'\n" +
+                        "  }\n"
+                        );
             }
             String email = emailNode.asText();
             String password = passwordNode.asText();
@@ -143,15 +143,15 @@ public class EmployeeService extends Service{
             JsonNode passwordNode = jsonNode.get("password");
             JsonNode otherUserNode = jsonNode.get("otherUserEmail");
             if (emailNode == null || passwordNode == null || otherUserNode == null) {
-                return new Controller.WebTuple(400, """
-                        Could not add employee; missing data in request.
-                        Correct format for request body:
-                          {
-                            "email":"<email address>",
-                            "password":"<password>",
-                            "otherUserEmail":"<other user's email address>"
-                          }
-                        """);
+                return new Controller.WebTuple(400, 
+                "Could not add employee; missing data in request.\n" +
+                "Correct format for request body:\n" +
+                "  {\n" +
+                "    'email':'<email address>'',\n" +
+                "    'password':'<password>'\n" +
+                "     'otherUserEmail':'<other user's email address>'\n" +
+                "  }\n"
+                );
             }
             String email = emailNode.asText();
             String password = passwordNode.asText();

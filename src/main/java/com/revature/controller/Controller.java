@@ -39,5 +39,15 @@ public abstract class Controller implements HttpHandler {
 
     //This subclass is used by Controllers to send both the information about what happened when fulfilling a request and
     // an HTTP status code relevant to that response.
-    public record WebTuple(int statusCode, String response) {}
+    public static class WebTuple {
+        private int statusCode;
+        private String response;
+        public WebTuple(int statusCode, String response){
+            this.statusCode = statusCode;
+            this.response = response;
+        }
+
+        public int statusCode(){ return statusCode; }
+        public String response(){ return response; }
+    }
 }

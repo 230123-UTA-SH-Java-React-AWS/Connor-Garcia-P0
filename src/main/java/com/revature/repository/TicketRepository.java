@@ -63,17 +63,19 @@ public class TicketRepository {
             ResultSet rs = stmt.executeQuery();
             //Mapping information from a table to our data structure
             while (rs.next()) {
-                Ticket.StatusValues status = switch(rs.getString(3)){
-                    case "PENDING" -> Ticket.StatusValues.PENDING;
-                    case "APPROVED" -> Ticket.StatusValues.APPROVED;
-                    case "DENIED" -> Ticket.StatusValues.DENIED;
-                    default -> throw new IllegalStateException("BAD DATA IN TICKET TABLE");
+                Ticket.StatusValues status;
+                switch(rs.getString(3)){
+                    case "PENDING": status = Ticket.StatusValues.PENDING; break;
+                    case "APPROVED": status = Ticket.StatusValues.APPROVED; break;
+                    case "DENIED": status = Ticket.StatusValues.DENIED; break;
+                    default: throw new IllegalStateException("BAD DATA IN TICKET TABLE");
                 };
-                Ticket.ReimbursementType type = switch(rs.getString(4)){
-                    case "FOOD" -> Ticket.ReimbursementType.FOOD;
-                    case "LODGING" -> Ticket.ReimbursementType.LODGING;
-                    case "TRAVEL" -> Ticket.ReimbursementType.TRAVEL;
-                    default -> Ticket.ReimbursementType.OTHER;
+                Ticket.ReimbursementType type;
+                 switch(rs.getString(4)){
+                    case "FOOD": type = Ticket.ReimbursementType.FOOD; break;
+                    case "LODGING": type = Ticket.ReimbursementType.LODGING; break;
+                    case "TRAVEL": type = Ticket.ReimbursementType.TRAVEL; break;
+                    default: type = Ticket.ReimbursementType.OTHER;
                 };
 
                 Ticket ticket = new Ticket(
@@ -148,18 +150,19 @@ public class TicketRepository {
             ResultSet rs = stmt.executeQuery(sql);
             //Mapping information from a table to our data structure
             while (rs.next()) {
-                Ticket.ReimbursementType type = switch (rs.getString(4)) {
-                    case "TRAVEL" -> Ticket.ReimbursementType.TRAVEL;
-                    case "LODGING" -> Ticket.ReimbursementType.LODGING;
-                    case "FOOD" -> Ticket.ReimbursementType.FOOD;
-                    default -> Ticket.ReimbursementType.OTHER; //More lenient here
+                Ticket.StatusValues status;
+                switch(rs.getString(3)){
+                    case "PENDING": status = Ticket.StatusValues.PENDING; break;
+                    case "APPROVED": status = Ticket.StatusValues.APPROVED; break;
+                    case "DENIED": status = Ticket.StatusValues.DENIED; break;
+                    default: throw new IllegalStateException("BAD DATA IN TICKET TABLE");
                 };
-                Ticket.StatusValues status = switch (rs.getString(3)) {
-                    case "APPROVED" -> Ticket.StatusValues.APPROVED;
-                    case "DENIED" -> Ticket.StatusValues.DENIED;
-                    case "PENDING" -> Ticket.StatusValues.PENDING;
-                    default ->
-                            throw new IllegalStateException("BAD DATA IN TICKET TABLE");
+                Ticket.ReimbursementType type;
+                 switch(rs.getString(4)){
+                    case "FOOD": type = Ticket.ReimbursementType.FOOD; break;
+                    case "LODGING": type = Ticket.ReimbursementType.LODGING; break;
+                    case "TRAVEL": type = Ticket.ReimbursementType.TRAVEL; break;
+                    default: type = Ticket.ReimbursementType.OTHER;
                 };
 
                 Ticket ticket = new Ticket(

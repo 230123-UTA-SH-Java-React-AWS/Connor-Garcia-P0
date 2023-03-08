@@ -58,10 +58,11 @@ public class EmployeeRepository {
             while (rs.next()) {
                 //This switch statement (which should be an if statement) is here because it adds to scalability.
                 //If more roles are added later (ADMIN, etc.), then this is easier to update.
-                Employee.Roles eRole = switch (rs.getString(4)) {
-                    case "MANAGER" -> Employee.Roles.MANAGER;
-                    case "STANDARD" -> Employee.Roles.STANDARD;
-                    default -> throw new IllegalStateException("BAD DATA IN EMPLOYEE TABLE");
+                Employee.Roles eRole;
+                switch (rs.getString(4)) {
+                    case "MANAGER": eRole = Employee.Roles.MANAGER; break;
+                    case "STANDARD": eRole = Employee.Roles.STANDARD; break;
+                    default: throw new IllegalStateException("BAD DATA IN EMPLOYEE TABLE");
                 };
                 Employee empl = new Employee(rs.getString(2), rs.getInt(3), eRole, rs.getInt(1));
                 employeeList.add(empl);

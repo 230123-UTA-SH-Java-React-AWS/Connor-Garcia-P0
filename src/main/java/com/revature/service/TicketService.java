@@ -34,26 +34,27 @@ public class TicketService extends Service {
         JsonNode ticketIDNode = jsonNode.get("ticketID");
         JsonNode newStatusNode = jsonNode.get("newStatus");
         if (emailNode == null || passwordNode == null || ticketIDNode == null || newStatusNode == null) {
-            return new Controller.WebTuple(400, """
-                    Could not add employee; missing data in request.
-                    Correct format for request body:
-                      {
-                        "email":"<email address>",
-                        "password":"<password>",
-                        "ticketID":<id of the ticket to finalize>,
-                        "newStatus":"<APPROVED/DENIED>"
-                      }
-                    """);
+            return new Controller.WebTuple(400, 
+                    "Could not add employee; missing data in request.\n" +
+                    "Correct format for request body:\n" +
+                    "  {\n" +
+                    "    'email':'<email address>',\n" +
+                    "    'password':'<password>',\n" +
+                    "    'ticketID':<id of the ticket to finalize>,\n" +
+                    "    'newStatus':'<APPROVED/DENIED>'\n" +
+                    "  }"
+                    );
         }
         //Manager's credentials
         String email = emailNode.asText();
         String password = passwordNode.asText();
         //Ticket information
         int ticketID = ticketIDNode.asInt();
-        Ticket.StatusValues newStatus = switch(newStatusNode.asText().toLowerCase()){
-            case "approved" -> Ticket.StatusValues.APPROVED;
-            case "denied" -> Ticket.StatusValues.DENIED;
-            default -> null;
+        Ticket.StatusValues newStatus; 
+        switch(newStatusNode.asText().toLowerCase()){
+            case "approved": newStatus =  Ticket.StatusValues.APPROVED; break;
+            case "denied": newStatus =  Ticket.StatusValues.DENIED; break;
+            default: newStatus =  null;
         };
 
         //Input validation
@@ -98,19 +99,19 @@ public class TicketService extends Service {
         JsonNode statusNode = rootNode.get("status");
         JsonNode typeNode = rootNode.get("type");
         if (emailNode == null || passwordNode == null) {
-            return new Controller.WebTuple(400,"""
-                    Could not add employee; missing data in request.
-                    Correct format for request body:
-                      {
-                        "email":"<email address>",
-                        "password":"<password>"
-                        ["fromEmployee":"<other employee's email>"] << get only the tickets that come from a specific employee (omit for all employees)
-                        ["status":"<pending/approved/denied>"] << get only the tickets with a specific status (omit for all statuses)
-                        ["type":"<travel/lodging/food/other>"] << get only the tickets asking to reimburse a specific type of purchase (omit for all types)
-                      }
-                    Note that multiple filters as described above can be used in conjunction
-                      (example: get all tickets from JonDoe@example.com which were denied)
-                    """);
+            return new Controller.WebTuple(400,
+                    "Could not add employee; missing data in request.\n" +
+                    "Correct format for request body:\n" +
+                    "  {\n" +
+                    "    'email':'<email address>',\n" +
+                    "    'password':'<password>'\n" +
+                    "    ['fromEmployee':'<other employee's email>'] << get only the tickets that come from a specific employee (omit for all employees)\n" +
+                    "    ['status':'<pending/approved/denied>'] << get only the tickets with a specific status (omit for all statuses)\n" +
+                    "    ['type':'<travel/lodging/food/other>'] << get only the tickets asking to reimburse a specific type of purchase (omit for all types)\n" +
+                    "  }\n" +
+                    "Note that multiple filters as described above can be used in conjunction\n" +
+                    "  (example: get all tickets from JonDoe@example.com which were denied)"
+                    );
         }
         //Manager's credentials
         String email = emailNode.asText();
@@ -121,20 +122,22 @@ public class TicketService extends Service {
         int emplID = EMPLOYEE_REPOSITORY.getEmployeeId(fromEmployee);
 
         //The status of the ticket
-        Ticket.StatusValues status = statusNode == null? null : switch(statusNode.asText().toLowerCase()){
-            case "approved" -> Ticket.StatusValues.APPROVED;
-            case "denied" -> Ticket.StatusValues.DENIED;
-            case "pending" -> Ticket.StatusValues.PENDING;
-            default -> null;
+        Ticket.StatusValues status;
+        if (statusNode == null) status = null; else switch(statusNode.asText().toLowerCase()){
+            case "approved": status = Ticket.StatusValues.APPROVED; break;
+            case "denied": status = Ticket.StatusValues.DENIED; break;
+            case "pending": status = Ticket.StatusValues.PENDING; break;
+            default: status = null;
         };
 
         //The type of purchase that the ticket is asking to reimburse
-        Ticket.ReimbursementType type = typeNode == null? null : switch(typeNode.asText().toLowerCase()){
-            case "food" -> Ticket.ReimbursementType.FOOD;
-            case "lodging" -> Ticket.ReimbursementType.LODGING;
-            case "travel" -> Ticket.ReimbursementType.TRAVEL;
-            case "other" -> Ticket.ReimbursementType.OTHER;
-            default -> null;
+        Ticket.ReimbursementType type; 
+        if(typeNode == null) type =  null; else switch(typeNode.asText().toLowerCase()){
+            case "food": type = Ticket.ReimbursementType.FOOD; break;
+            case "lodging": type = Ticket.ReimbursementType.LODGING; break;
+            case "travel": type = Ticket.ReimbursementType.TRAVEL; break;
+            case "other": type = Ticket.ReimbursementType.OTHER; break;
+            default: type = null;
         };
 
         //Verifying that the credentials given are correct and come from a manager
@@ -168,39 +171,46 @@ public class TicketService extends Service {
         JsonNode statusNode = jsonNode.get("status");
         JsonNode typeNode = jsonNode.get("type");
         if (emailNode == null || passwordNode == null) {
-            return new Controller.WebTuple(400, """
-                    Could not add employee; missing data in request.
-                    Correct format for request body:
-                      {
-                        "email":"<email address>",
-                        "password":"<password>"
-                        ["status":"<pending/approved/denied>"] << get only the tickets with a specific status (omit for all statuses)
-                        ["type":"<travel/lodging/food/other>"] << get only the tickets asking to reimburse a specific type of purchase (omit for all types)
-                      }
-                    Note that multiple filters as described above can be used in conjunction
-                      (example: get all tickets which are pending and ask to reimburse travel)
-                    """);
+            return new Controller.WebTuple(400,
+                    "Could not add employee; missing data in request.\n" +
+                    "Correct format for request body:\n" +
+                      "{\n" +
+                        "'email':'<email address>',\n" +
+                        "'password':'<password>'\n" +
+                        "['status':'<pending/approved/denied>'] << get only the tickets with a specific status (omit for all statuses)\n" +
+                        "['type':'<travel/lodging/food/other>'] << get only the tickets asking to reimburse a specific type of purchase (omit for all types)\n" +
+                      "}\n" +
+                    "Note that multiple filters as described above can be used in conjunction\n" +
+                      "(example: get all tickets which are pending and ask to reimburse travel)\n"
+                    );
         }
         //Employee's credentials
         String email = emailNode.asText();
         String password = passwordNode.asText();
 
         //The status of the ticket
-        Ticket.StatusValues status = statusNode == null? null : switch(statusNode.asText().toLowerCase()){
-            case "approved" -> Ticket.StatusValues.APPROVED;
-            case "denied" -> Ticket.StatusValues.DENIED;
-            case "pending" -> Ticket.StatusValues.PENDING;
-            default -> null;
+        Ticket.StatusValues status;
+        if (statusNode == null) status = null;
+        else switch(statusNode.asText().toLowerCase()){
+            case "approved": status = Ticket.StatusValues.APPROVED; break;
+            case "denied": status = Ticket.StatusValues.DENIED; break;
+            case "pending": status = Ticket.StatusValues.PENDING; break;
+            default: status = null;
         };
 
         //The type of purchase that the ticket is asking to reimburse
-        Ticket.ReimbursementType type = typeNode == null? null : switch(typeNode.asText().toLowerCase()){
-            case "food" -> Ticket.ReimbursementType.FOOD;
-            case "lodging" -> Ticket.ReimbursementType.LODGING;
-            case "travel" -> Ticket.ReimbursementType.TRAVEL;
-            case "other" -> Ticket.ReimbursementType.OTHER;
-            default -> null;
-        };
+        Ticket.ReimbursementType type;
+        if(typeNode == null) {
+            type = null;
+        } else {
+            switch(typeNode.asText().toLowerCase()){
+                case "travel": type = Ticket.ReimbursementType.TRAVEL; break;
+                case "lodging": type = Ticket.ReimbursementType.LODGING; break;
+                case "food": type = Ticket.ReimbursementType.FOOD; break;
+                case "other": type = Ticket.ReimbursementType.OTHER; break;
+                default: type = null;
+            };
+        }
 
         //Verifying that the credentials given are correct
         Employee employee = EMPLOYEE_REPOSITORY.getEmployeeByEmail(email);
@@ -236,27 +246,32 @@ public class TicketService extends Service {
         JsonNode amountNode = jsonNode.get("amount");
         JsonNode descriptionNode = jsonNode.get("description");
         if(emailNode == null || passwordNode == null || amountNode == null || descriptionNode == null) {
-            return new Controller.WebTuple(400,"""
-                        Could not add employee; missing data in request.
-                        Correct format for request body:
-                          {
-                            "email":"<email address>",
-                            "password":"<password>",
-                            "reimbursementType":["TRAVEL/LODGING/FOOD/OTHER"], <-- optional, defaults to OTHER
-                            "amount":"<amount in ticket request>",
-                            "description":"<description of the purchase>"
-                          }
-                        """);
+            return new Controller.WebTuple(400,
+                        "Could not add employee; missing data in request.\n" +
+                        "Correct format for request body:\n" +
+                        "  {\n" +
+                        "    'email':'<email address>',\n" +
+                        "    'password':'<password>',\n" +
+                        "    'reimbursementType':['TRAVEL/LODGING/FOOD/OTHER'], <-- optional, defaults to OTHER\n" +
+                        "    'amount':'<amount in ticket request>',\n" +
+                        "    'description':'<description of the purchase>'\n" +
+                        "  }\n"
+                        );
         }
         //Extracting all the information from the request into a format usable by TicketRepository
         String email = emailNode.asText();
         String password = passwordNode.asText();
-        Ticket.ReimbursementType reimbursementType = reimbursementNode == null? Ticket.ReimbursementType.OTHER : switch(reimbursementNode.asText()){
-            case "TRAVEL" -> Ticket.ReimbursementType.TRAVEL;
-            case "LODGING" -> Ticket.ReimbursementType.LODGING;
-            case "FOOD" -> Ticket.ReimbursementType.FOOD;
-            default -> Ticket.ReimbursementType.OTHER;
-        };
+        Ticket.ReimbursementType reimbursementType;
+        if(reimbursementNode == null) {
+            reimbursementType = Ticket.ReimbursementType.OTHER;
+        } else {
+            switch(reimbursementNode.asText()){
+                case "TRAVEL": reimbursementType = Ticket.ReimbursementType.TRAVEL; break;
+                case "LODGING": reimbursementType = Ticket.ReimbursementType.LODGING; break;
+                case "FOOD": reimbursementType = Ticket.ReimbursementType.FOOD; break;
+                default: reimbursementType = Ticket.ReimbursementType.OTHER;
+            };
+        }
 
         //Checking the credentials of the employee to ensure that they are valid.
         Employee employee = EMPLOYEE_REPOSITORY.getEmployeeByEmail(email);

@@ -4,7 +4,6 @@ import com.revature.service.EmployeeService;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Objects;
 
 public class ControllerGetEmployees extends Controller {
